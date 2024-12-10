@@ -3,9 +3,7 @@ from datetime import date, timedelta
 
 
 class DataFormatter:
-    def __init__(self):
-        pass
-
+    def __init__(self): ...
     def _api_pattern_to_date(self, year: int, month: int, day: int) -> date:
         return date(year, month, day)
 
@@ -27,18 +25,24 @@ class DataFormatter:
 
         return historical_ratings
 
-    def filter_historical_ratings(
-        self, historical_ratings: list, days_before_today: int
+    def _find_ranking_on_date(
+        self, desired_date: date, historical_ratings: list
+    ) -> int: ...
+
+    def generate_past_x_days_rating_object(
+        self, days_before_today: int, player_rating_history: list
     ) -> list:
-        days_from_today_object = date.today() - timedelta(days=days_before_today)
+        past_x_days_rating_object = list()
 
-        filtered_historical_ratings = list()
+        for days in range(days_before_today):
+            days_from_today = date.today() - timedelta(days=days)
+            rating = self._find_ranking_on_date(days_from_today, player_rating_history)
 
-        for historical_rating in historical_ratings:
-            if historical_ratings["date"] >= days_from_today_object:
-                filtered_historical_ratings.append(historical_rating)
+            rating_history_object = {"date": days_before_today, "rating": rating}
 
-        return filtered_historical_ratings
+            past_x_days_rating_object.append(rating_history_object)
+
+        return past_x_days_rating_object
 
 
 class Interface:
